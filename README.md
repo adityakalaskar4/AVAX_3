@@ -13,7 +13,7 @@ In this project, I will create a smart contract on the Avalanche (Avax) blockcha
 The structure of the contract ensures the security and control of the token business:
 - *Mint:* Minting tokens reduces the initial price while increasing the additional cost.
 - *Burning:* Token burning reduces the balance, essentially eliminating the minting process. This feature has proven to be very useful in token exchange.
-= *Transfer:* Transfer token to the specific address by specific amount.
+- *Transfer:* Transfer token to the specific address by specific amount.
 
 ## Execution workflow
 To use a smart contract, the following steps must be performed:
