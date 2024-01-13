@@ -1,47 +1,33 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-contract Trans_Tkn {
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-    string public tk_name;
-    string public tk_symbol;
-    uint256 public totalsupply;
-    mapping(address=> uint256) public balance;
-    address public owner;
+contract Trans_Tkn is ERC20, Ownable {
+
     uint public max_mint_limit;
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "You are not the owner");
-        _;
-    }
-    constructor() {
-        tk_name = "Aditya";
-        tk_symbol = "Adi";
-        totalsupply = 1000;
-        max_mint_limit = 10000;
-        owner = msg.sender;
-    }
+   constructor() ERC20("Aditya", "Adi") Ownable(msg.sender) {
+    _mint(msg.sender, 1000 * 10 ** decimals());
+    max_mint_limit = 10000 * 10 ** decimals();
+}
 
-    function mint_Tkn(address to, uint256 amount) public onlyOwner {
+    function mint_Tkn(address to, uint256 amount) external onlyOwner {
         require(to != address(0), "Error");
-        require(amount < max_mint_limit, "Higher the maximum supply");
-        totalsupply += amount;
-        balance[to] += amount;
+        require(amount <= max_mint_limit, "Higher the maximum supply");
+        _mint(to, amount);
         max_mint_limit -= amount;
     }
 
-    function burn_Tkn(uint256 amount) public {
-        require(balance[msg.sender] >= amount, "Balance is Insufficient");
-        totalsupply -= amount;
-        balance[msg.sender] -= amount;
+    function burn_Tkn(uint256 amount) external {
+        _burn(msg.sender, amount);
         max_mint_limit += amount;
     }
 
-    function transfer_Tkn(address to, uint256 amount) public returns (bool) {
-        require(to != address(0), "Error");
-        require(balance[msg.sender] >= amount, "Balance is Insufficient");
-        balance[msg.sender] -= amount;
-        balance[to] += amount;
+    function transfer_Tkn(address to, uint256 amount) public  returns (bool) {
+        require(to != address(0), "Address is Insufficient");
+        _transfer(msg.sender, to, amount);
         return true;
     }
 }
